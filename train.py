@@ -11,18 +11,18 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from google.cloud import storage
 
-# -----------------------------
-# SageMaker paths (DO NOT CHANGE)
-# -----------------------------
-INPUT_DIR = "/opt/ml/input/data/train"
-OUTPUT_DIR = "/opt/ml/model"
+client = storage.Client()
+bucket = client.get_bucket("credit-fraud-bucket")
+blob = bucket.blob("creditcard_train.csv")
+blob.download_to_filename("creditcard_train.csv")
+
 
 # -----------------------------
 # Load data
 # -----------------------------
-data_path = os.path.join(INPUT_DIR, "Training.csv")
-data = pd.read_csv(data_path)
+data = pd.read_csv("creditcard_train.csv")
 
 X = data.drop("Class", axis=1)
 y = data["Class"]
@@ -55,11 +55,30 @@ print("📊 Metrics:", metrics)
 # -----------------------------
 # Save model artifacts
 # -----------------------------
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs("outputs", exist_ok=True)
 
-joblib.dump(model, os.path.join(OUTPUT_DIR, "model.pkl"))
+model_path = "outputs/model.pkl"
+metrics_path = "outputs/metrics.json"
 
-with open(os.path.join(OUTPUT_DIR, "metrics.json"), "w") as f:
+
+joblib.dump(model, model_path)
+
+with open(metrics_path, "w") as f:
     json.dump(metrics, f)
 
 print("✅ Model and metrics saved")
+
+#upload to GCS
+
+bucket = client.bucket("credit-fraud-bucket")
+
+#upload model
+model_blob = bucket.blob("output/model.pkl")
+model_blob.upload_from_filename(model_path)
+
+#upload metrices
+metrices_blob = bucket.blob("output/metrics.json")
+metrices_blob.upload_from_filename(metrics_path)
+
+printf("✅ Model and metrics uploaded to GCS")
+
