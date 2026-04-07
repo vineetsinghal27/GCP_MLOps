@@ -80,5 +80,5 @@ model_blob.upload_from_filename(model_path)
 metrices_blob = bucket.blob("output/metrics.json")
 metrices_blob.upload_from_filename(metrics_path)
 
-printf("✅ Model and metrics uploaded to GCS")
+print("✅ Model and metrics uploaded to GCS")
 
