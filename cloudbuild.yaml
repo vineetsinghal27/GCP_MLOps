@@ -9,9 +9,26 @@ steps:
 
 # Step 2: Run training
 - name: 'python:3.10'
-  entrypoint: 'python'
-  args: ['train.py']
+  entrypoint: 'bash'
+  args: 
+    - '-c'
+    - |
+      python train.py['train.py']
 
-# Optional: Upload model to GCS
+# Step 3: Upload model to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', 'model.pkl', 'gs://credit-card-fraud-gcp/']
+  args: 
+    - 'cp'
+    - 'outputs/model.pkl'
+    - 'gs://credit-card-fraud-gcp/'
+
+# Step 4: Upload metrics
+- name: 'gcr.io/cloud-builders/gsutil'
+  args:
+    - 'cp'
+    - 'outputs/metrics.json'
+    - 'gs://credit-card-fraud-gcp/'
+
+options:
+   logging: CLOUD_LOGGING_ONLY
+
