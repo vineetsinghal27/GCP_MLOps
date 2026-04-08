@@ -13,7 +13,7 @@ steps:
   args: 
     - '-c'
     - |
-      python train.py['train.py']
+      python train.py
 
 # Step 3: Upload model to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
