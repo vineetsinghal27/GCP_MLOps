@@ -1,21 +1,14 @@
 steps:
-# Step 1: Install dependencies
+# Step 1: Install Dependenices + Run Training Code
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
     - '-c'
     - |
       pip install -r requirements.txt
-
-# Step 2: Run training
-- name: 'python:3.10'
-  entrypoint: 'bash'
-  args: 
-    - '-c'
-    - |
       python train.py
 
-# Step 3: Upload model to GCS
+# Step 2: Upload model to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
   args: 
     - 'cp'
