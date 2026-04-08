@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from google.cloud import storage
 
 client = storage.Client()
-bucket = client.get_bucket("credit-fraud-bucket")
+bucket = client.get_bucket("credit-card-fraud-gcp")
 blob = bucket.blob("creditcard_train.csv")
 blob.download_to_filename("creditcard_train.csv")
 
@@ -70,7 +70,7 @@ print("✅ Model and metrics saved")
 
 #upload to GCS
 
-bucket = client.bucket("credit-fraud-bucket")
+bucket = client.bucket("credit-card-fraud-gcp")
 
 #upload model
 model_blob = bucket.blob("output/model.pkl")
