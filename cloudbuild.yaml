@@ -9,7 +9,7 @@ steps:
       python train.py
 
 # Step 2: Register model in Vertex AI
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+- name: 'python:3.10'
   entrypoint: 'bash'
   args:
     - '-c'
