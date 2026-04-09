@@ -8,19 +8,6 @@ steps:
       pip install -r requirements.txt
       python train.py
 
-# Step 2: Upload model to GCS
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: 
-    - 'cp'
-    - 'outputs/model.pkl'
-    - 'gs://credit-card-fraud-gcp/'
-
-# Step 4: Upload metrics
-- name: 'gcr.io/cloud-builders/gsutil'
-  args:
-    - 'cp'
-    - 'outputs/metrics.json'
-    - 'gs://credit-card-fraud-gcp/'
 
 options:
    logging: CLOUD_LOGGING_ONLY
