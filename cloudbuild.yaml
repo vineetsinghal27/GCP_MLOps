@@ -8,7 +8,15 @@ steps:
       pip install -r requirements.txt
       python train.py
 
+# Step 2: Register model in Vertex AI
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      pip install google-cloud-aiplatform google-cloud-storage
+      python register.py
 
 options:
-   logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY
 
