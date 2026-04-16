@@ -61,7 +61,7 @@ model_path = "outputs/model.pkl"
 metrics_path = "outputs/metrics.json"
 
 
-joblib.dump(model, model_path)
+joblib.dump(model, model_path, protocol=4)
 
 with open(metrics_path, "w") as f:
     json.dump(metrics, f)
