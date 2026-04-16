@@ -73,11 +73,11 @@ print("✅ Model and metrics saved")
 bucket = client.bucket("credit-card-fraud-gcp")
 
 #upload model
-model_blob = bucket.blob("output/model.pkl")
+model_blob = bucket.blob("model.pkl")
 model_blob.upload_from_filename(model_path)
 
 #upload metrices
-metrices_blob = bucket.blob("output/metrics.json")
+metrices_blob = bucket.blob("metrics.json")
 metrices_blob.upload_from_filename(metrics_path)
 
 print("✅ Model and metrics uploaded to GCS")
