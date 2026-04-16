@@ -45,7 +45,7 @@ if tests_pass(metrics, test_thresholds):
     model = aiplatform.Model.upload(
         display_name="credit-card-fraud-model",
         artifact_uri="gs://credit-card-fraud-gcp/output/",
-        serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-0:latest",
+        serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest",
         labels={
             "stage": "staging",
             "type": "challenger"
