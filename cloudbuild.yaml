@@ -1,6 +1,6 @@
 steps:
 # Step 1: Install Dependenices + Run Training Code
-- name: 'python:3.10'
+- name: 'python:3.7'
   entrypoint: 'bash'
   args:
     - '-c'
@@ -9,7 +9,7 @@ steps:
       python train.py
 
 # Step 2: Register model in Vertex AI
-- name: 'python:3.10'
+- name: 'python:3.7'
   entrypoint: 'bash'
   args:
     - '-c'
