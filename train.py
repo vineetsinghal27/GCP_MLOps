@@ -61,7 +61,7 @@ model_path = "outputs/model.pkl"
 metrics_path = "outputs/metrics.json"
 
 
-joblib.dump(model, model_path, protocol=4)
+joblib.dump(model, model_path)
 
 with open(metrics_path, "w") as f:
     json.dump(metrics, f)
@@ -73,11 +73,11 @@ print("✅ Model and metrics saved")
 bucket = client.bucket("credit-card-fraud-gcp")
 
 #upload model
-model_blob = bucket.blob("model.pkl")
+model_blob = bucket.blob("model/model.pkl")
 model_blob.upload_from_filename(model_path)
 
 #upload metrices
-metrices_blob = bucket.blob("metrics.json")
+metrices_blob = bucket.blob("model/metrics.json")
 metrices_blob.upload_from_filename(metrics_path)
 
 print("✅ Model and metrics uploaded to GCS")
