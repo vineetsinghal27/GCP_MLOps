@@ -1,5 +1,5 @@
 steps:
-# Step 1: Install Dependenices + Run Training Code
+# Step 1: Install Dependencies + Run Training Code
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
@@ -7,6 +7,15 @@ steps:
     - |
       pip install -r requirements.txt
       python train.py
+
+# ✅ Step 1.5: Verify the saved model artifact
+- name: 'python:3.10'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      pip install joblib scikit-learn
+      python verify_model.py
 
 # Step 2: Register model in Vertex AI
 - name: 'python:3.10'
@@ -19,4 +28,3 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
