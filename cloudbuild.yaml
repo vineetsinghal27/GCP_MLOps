@@ -48,7 +48,19 @@ steps:
     ]
 
 # ------------------------------------------------------
-# Step 5: Register model in Vertex AI
+# Step 5: Push custom prediction container
+# ------------------------------------------------------
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'push',
+      'us-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest'
+    ]
+
+
+# ------------------------------------------------------
+# Step 6: Register model in Vertex AI
 # ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
