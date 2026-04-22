@@ -1,12 +1,13 @@
 import joblib
 import numpy as np
+import sys
 
 class Predictor:
     def __init__(self):
-        # Vertex AI mounts the model here automatically
+        print("🔥🔥🔥 CUSTOM PREDICTOR INIT 🔥🔥🔥", file=sys.stderr)
         self.model = joblib.load("/aiplatform/model/model.pkl")
 
     def predict(self, instances):
+        print("🔥🔥🔥 CUSTOM PREDICT CALLED 🔥🔥🔥", file=sys.stderr)
         X = np.array(instances)
-        predictions = self.model.predict(X)
-        return predictions.tolist()
+        return self.model.predict(X).tolist()
