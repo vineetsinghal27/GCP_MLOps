@@ -1,10 +1,7 @@
 FROM us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest
 
-WORKDIR /app
+# ✅ Copy into /usr/app (expected by Vertex images)
+COPY predictor.py /usr/app/predictor.py
 
-COPY predictor.py /app/predictor.py
-
-# ✅ THIS LINE FIXES THE ERROR
-ENV PYTHONPATH=/app:/usr/lib/python3.10:/opt/conda/lib/python3.10/site-packages
-
+# ✅ Tell Vertex which class to load
 ENV AIP_PREDICTOR_CLASS=predictor.Predictor
