@@ -1,5 +1,7 @@
 steps:
-# Step 1: Install Dependencies + Run Training Code
+# ------------------------------------------------------
+# Step 1: Install dependencies and train the model
+# ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
@@ -8,22 +10,52 @@ steps:
       pip install -r requirements.txt
       python train.py
 
-# ✅ Step 1.5: Verify the saved model artifact
+# ------------------------------------------------------
+# Step 2: Verify the trained model locally
+# ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
     - '-c'
     - |
-      pip install joblib scikit-learn
-      python verify_model.py
+      pip install scikit-learn==1.5.0 joblib numpy
+      python - <<EOF
+      import joblib
+      model = joblib.load("outputs/model.pkl")
+      print("✅ Model type:", type(model))
+      assert hasattr(model, "predict"), "❌ Model has no predict()"
+      EOF
 
-# Step 2: Register model in Vertex AI
+# ------------------------------------------------------
+# Step 3: Upload ONLY model.pkl to clean GCS path
+# ------------------------------------------------------
+- name: 'gcr.io/cloud-builders/gsutil'
+  args:
+    - 'cp'
+    - 'outputs/model.pkl'
+    - 'gs://credit-card-fraud-gcp/sklearn_model/model.pkl'
+
+# ------------------------------------------------------
+# Step 4: Build custom prediction container
+# ------------------------------------------------------
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'build',
+      '-t',
+      'us-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest',
+      '.'
+    ]
+
+# ------------------------------------------------------
+# Step 5: Register model in Vertex AI
+# ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
     - '-c'
     - |
-      pip install google-cloud-aiplatform google-cloud-storage
+      pip install google-cloud-aiplatform
       python register.py
 
 options:
