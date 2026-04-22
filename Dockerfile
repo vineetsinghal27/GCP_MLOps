@@ -1,4 +1,4 @@
-FROM asia-south1-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest
+FROM us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest
 
 WORKDIR /app
 
