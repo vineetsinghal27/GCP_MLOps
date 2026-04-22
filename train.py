@@ -77,7 +77,7 @@ model_blob = bucket.blob("model/model.pkl")
 model_blob.upload_from_filename(model_path)
 
 #upload metrices
-metrices_blob = bucket.blob("model/metrics.json")
+metrices_blob = bucket.blob("metrics/metrics.json")
 metrices_blob.upload_from_filename(metrics_path)
 
 print("✅ Model and metrics uploaded to GCS")
