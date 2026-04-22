@@ -1,5 +1,7 @@
-FROM us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest
+FROM asia-south1-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest
 
-COPY predictor.py /predictor.py
+WORKDIR /app
+
+COPY predictor.py /app/predictor.py
 
 ENV AIP_PREDICTOR_CLASS=predictor.Predictor

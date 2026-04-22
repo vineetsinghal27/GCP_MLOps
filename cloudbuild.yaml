@@ -43,7 +43,7 @@ steps:
     [
       'build',
       '-t',
-      'us-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest',
+      'asia-south1-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest',
       '.'
     ]
 
@@ -55,7 +55,7 @@ steps:
   args:
     [
       'push',
-      'us-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest'
+      'asia-south1-docker.pkg.dev/$PROJECT_ID/vertex/sklearn-predictor:latest'
     ]
 
 
