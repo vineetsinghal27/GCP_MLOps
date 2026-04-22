@@ -11,7 +11,7 @@ location="asia-south1"
 # Load metrics from GCS (or local if running in same step)
 client = storage.Client()
 bucket = client.bucket("credit-card-fraud-gcp")
-blob = bucket.blob("output/metrics.json")
+blob = bucket.blob("model/metrics.json")
 
 metrics = json.loads(blob.download_as_text())
 
