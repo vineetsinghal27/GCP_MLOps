@@ -7,9 +7,9 @@ class Predictor:
     def __init__(self):
         print("🔥🔥🔥 CUSTOM PREDICTOR INIT 🔥🔥🔥", file=sys.stderr)
 
-        model_dir = os.environ.get("AIP_STORAGE_URI")
+        model_dir = os.environ.get("AIP_MODEL_DIR")
         if not model_dir:
-            raise RuntimeError("AIP_STORAGE_URI not set")
+            raise RuntimeError("AIP_MODEL_DIR not set")
 
         model_path = os.path.join(model_dir, "model.pkl")
         print(f"📦 Loading model from: {model_path}", file=sys.stderr)
