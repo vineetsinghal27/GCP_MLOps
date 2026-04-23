@@ -1,6 +1,6 @@
 steps:
 # ------------------------------------------------------
-# Step 1: Install dependencies and train the model
+# Step 1: Train model & upload artifacts to GCS
 # ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
@@ -13,23 +13,31 @@ steps:
       python train.py
 
 # ------------------------------------------------------
-# Step 2: Validate model artifact locally
+# Step 2: Validate model artifact FROM GCS
 # ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
   args:
     - '-c'
     - |
-      pip install --no-cache-dir scikit-learn==1.5 joblib numpy
+      pip install --no-cache-dir scikit-learn==1.5 joblib google-cloud-storage
       python - <<EOF
+      from google.cloud import storage
       import joblib
-      model = joblib.load("/tmp/outputs/model.pkl")
+
+      client = storage.Client()
+      bucket = client.bucket("credit-card-fraud-gcp")
+      blob = bucket.blob("model/model.pkl")
+
+      blob.download_to_filename("/tmp/model.pkl")
+      model = joblib.load("/tmp/model.pkl")
+
       print("✅ Model type:", type(model))
       assert hasattr(model, "predict"), "❌ Model missing predict()"
       EOF
 
 # ------------------------------------------------------
-# Step 3: Register model in Vertex AI (pre-built container)
+# Step 3: Register model in Vertex AI
 # ------------------------------------------------------
 - name: 'python:3.10'
   entrypoint: 'bash'
