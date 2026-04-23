@@ -1,28 +1,41 @@
+
 """
 GCP-compatible training script
-Reads data from cloud storage path
-Writes model + metrics to cloud storage output path
+Uses pre-built GCP container (Cloud Run / Vertex AI)
 """
 
 import os
 import json
 import pandas as pd
 import joblib
+from google.cloud import storage
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from google.cloud import storage
 
+# -----------------------------
+# Environment variables
+# -----------------------------
+BUCKET_NAME = os.environ.get("BUCKET_NAME")
+TRAIN_BLOB_PATH = "creditcard_train.csv"
+LOCAL_TRAIN_FILE = "/tmp/creditcard_train.csv"
+
+OUTPUT_DIR = os.environ.get("AIP_MODEL_DIR", "/tmp/outputs")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+# -----------------------------
+# Download data from GCS
+# -----------------------------
 client = storage.Client()
-bucket = client.get_bucket("credit-card-fraud-gcp")
-blob = bucket.blob("creditcard_train.csv")
-blob.download_to_filename("creditcard_train.csv")
+bucket = client.bucket(BUCKET_NAME)
 
+blob = bucket.blob(TRAIN_BLOB_PATH)
+blob.download_to_filename(LOCAL_TRAIN_FILE)
 
 # -----------------------------
 # Load data
 # -----------------------------
-data = pd.read_csv("creditcard_train.csv")
+data = pd.read_csv(LOCAL_TRAIN_FILE)
 
 X = data.drop("Class", axis=1)
 y = data["Class"]
@@ -30,7 +43,6 @@ y = data["Class"]
 x_train, x_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
-
 
 # -----------------------------
 # Train model
@@ -53,13 +65,10 @@ metrics = {
 print("📊 Metrics:", metrics)
 
 # -----------------------------
-# Save model artifacts
+# Save artifacts
 # -----------------------------
-os.makedirs("outputs", exist_ok=True)
-
-model_path = "outputs/model.pkl"
-metrics_path = "outputs/metrics.json"
-
+model_path = os.path.join(OUTPUT_DIR, "model.pkl")
+metrics_path = os.path.join(OUTPUT_DIR, "metrics.json")
 
 joblib.dump(model, model_path)
 
@@ -68,17 +77,10 @@ with open(metrics_path, "w") as f:
 
 print("✅ Model and metrics saved")
 
-#upload to GCS
-
-bucket = client.bucket("credit-card-fraud-gcp")
-
-#upload model
-model_blob = bucket.blob("model/model.pkl")
-model_blob.upload_from_filename(model_path)
-
-#upload metrices
-metrices_blob = bucket.blob("metrics/metrics.json")
-metrices_blob.upload_from_filename(metrics_path)
+# -----------------------------
+# Upload back to GCS
+# -----------------------------
+bucket.blob("model/model.pkl").upload_from_filename(model_path)
+bucket.blob("metrics/metrics.json").upload_from_filename(metrics_path)
 
 print("✅ Model and metrics uploaded to GCS")
-
