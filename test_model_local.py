@@ -2,7 +2,7 @@ import joblib
 import numpy as np
 
 # Load the model
-model = joblib.load("model.pkl")
+model = joblib.load("outputs/model.pkl")
 
 print("✅ Model type:", type(model))
 
